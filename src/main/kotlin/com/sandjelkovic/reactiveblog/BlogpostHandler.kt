@@ -20,7 +20,7 @@ class BlogpostHandler(val blogpostRepository: BlogpostRepository) {
 
     fun save(serverRequest: ServerRequest): Mono<ServerResponse> {
         return blogpostRepository.saveAll(serverRequest.bodyToMono(Blogpost::class.java))
-                // take the first one (first and only saved one
+                // take the first one (first and only saved one)
                 .next()
                 .flatMap { blogpost ->
                     ServerResponse
@@ -29,5 +29,5 @@ class BlogpostHandler(val blogpostRepository: BlogpostRepository) {
                 }
     }
 
-    private fun createLocationURI(blogpost: Blogpost) = URI.create("/${blogpost.id}")
+    private fun createLocationURI(blogpost: Blogpost) = URI.create("/posts/${blogpost.id}")
 }
