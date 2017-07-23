@@ -2,6 +2,7 @@ package com.sandjelkovic.reactiveblog
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.server.router
 
 
@@ -16,7 +17,9 @@ class Routes {
         ("/posts").nest {
             GET("/", f = { serverRequest -> blogpostHandler.getAll() })
             GET("/{id}", f = { serverRequest -> blogpostHandler.getById(serverRequest) })
-            POST("/", f = { serverRequest -> blogpostHandler.save(serverRequest) })
+            (accept(MediaType.APPLICATION_JSON_UTF8) and contentType(MediaType.APPLICATION_JSON_UTF8)).nest {
+                POST("/", f = { serverRequest -> blogpostHandler.save(serverRequest) })
+            }
         }
     }
 }
