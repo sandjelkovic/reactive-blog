@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository
  * @date 1.7.17.
  */
 @Document
-data class Blogpost(@Id val id: Long,
+data class Blogpost(@Id val id: String,
+                    val title: String,
                     val content: String)
 
 @Repository
