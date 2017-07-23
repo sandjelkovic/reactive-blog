@@ -15,4 +15,4 @@ data class Blogpost(@Id val id: String,
                     val content: String)
 
 @Repository
-interface BlogpostRepository : ReactiveMongoRepository<Blogpost, Long>
+interface BlogpostRepository : ReactiveMongoRepository<Blogpost, String>

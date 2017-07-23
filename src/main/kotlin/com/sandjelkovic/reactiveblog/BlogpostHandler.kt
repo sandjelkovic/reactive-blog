@@ -16,7 +16,7 @@ class BlogpostHandler(val blogpostRepository: BlogpostRepository) {
 
     fun getById(serverRequest: ServerRequest): Mono<ServerResponse> = ServerResponse
             .ok()
-            .body(blogpostRepository.findById(serverRequest.pathVariable("id").toLong()), Blogpost::class.java)
+            .body(blogpostRepository.findById(serverRequest.pathVariable("id")), Blogpost::class.java)
 
     fun save(serverRequest: ServerRequest): Mono<ServerResponse> {
         return blogpostRepository.saveAll(serverRequest.bodyToMono(Blogpost::class.java))
