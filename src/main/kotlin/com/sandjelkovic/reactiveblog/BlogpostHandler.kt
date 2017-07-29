@@ -22,10 +22,10 @@ class BlogpostHandler(val blogpostRepository: BlogpostRepository) {
     fun save(serverRequest: ServerRequest): Mono<ServerResponse> {
         return serverRequest.bodyToMono(Blogpost::class.java)
                 .flatMap { blogpostRepository.save(it) }
-                .flatMap { blogpost -> ServerResponse.created(createLocationUrl(blogpost)).build() }
+                .flatMap { blogpost -> ServerResponse.created(createLocationUri(blogpost)).build() }
     }
 
-    private fun createLocationUrl(blogpost: Blogpost) = URI.create("/posts/${blogpost.id}")
+    private fun createLocationUri(blogpost: Blogpost) = URI.create("/posts/${blogpost.id}")
 }
 
 const val PATH_VARIABLE_ID = "id"
