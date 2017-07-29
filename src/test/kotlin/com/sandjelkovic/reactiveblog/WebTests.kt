@@ -83,4 +83,17 @@ class WebTests {
         assertThat(responseBody, samePropertyValuesAs(existingBlog))
     }
 
+    @Test
+    fun getByNonExistingId() {
+        val blogsBefore = blogpostRepository.findAll().collectList().block()
+        val nonExistingId = "99999"
+
+        webClient.get().uri("/posts/$nonExistingId")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .exchange()
+                .expectStatus().isNotFound
+                .expectBody().isEmpty
+
+    }
+
 }

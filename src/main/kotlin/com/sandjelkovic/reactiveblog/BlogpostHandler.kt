@@ -15,8 +15,9 @@ class BlogpostHandler(val blogpostRepository: BlogpostRepository) {
             .body(blogpostRepository.findAll(), Blogpost::class.java)
 
     fun getById(serverRequest: ServerRequest): Mono<ServerResponse> =
-            blogpostRepository.findById(serverRequest.pathVariable("id"))
+            blogpostRepository.findById(serverRequest.pathVariable(PATH_VARIABLE_ID))
                     .flatMap { ServerResponse.ok().body(Mono.just(it), Blogpost::class.java) }
+                    .switchIfEmpty(ServerResponse.notFound().build())
 
     fun save(serverRequest: ServerRequest): Mono<ServerResponse> {
         return serverRequest.bodyToMono(Blogpost::class.java)
@@ -26,3 +27,5 @@ class BlogpostHandler(val blogpostRepository: BlogpostRepository) {
 
     private fun createLocationUrl(blogpost: Blogpost) = URI.create("/posts/${blogpost.id}")
 }
+
+const val PATH_VARIABLE_ID = "id"
