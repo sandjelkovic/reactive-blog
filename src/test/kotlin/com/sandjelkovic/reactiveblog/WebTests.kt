@@ -1,7 +1,8 @@
 package com.sandjelkovic.reactiveblog
 
+import org.apache.commons.lang3.RandomUtils
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,6 +64,23 @@ class WebTests {
                 .block()
 
         assertThat(savedBlogpost, equalTo(blogpostToSave))
-
     }
+
+    @Test
+    fun getById() {
+        val blogsBefore = blogpostRepository.findAll().collectList().block()
+        val existingBlog = blogsBefore[RandomUtils.nextInt(0, blogsBefore.size)]
+
+        val responseBody = webClient.get().uri("/posts/${existingBlog.id}")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .exchange()
+                .expectStatus().isOk
+                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectBody(Blogpost::class.java)
+                .returnResult().responseBody
+
+        assertThat(responseBody, notNullValue())
+        assertThat(responseBody, samePropertyValuesAs(existingBlog))
+    }
+
 }
