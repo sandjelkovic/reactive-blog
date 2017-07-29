@@ -14,20 +14,15 @@ class BlogpostHandler(val blogpostRepository: BlogpostRepository) {
             .ok()
             .body(blogpostRepository.findAll(), Blogpost::class.java)
 
-    fun getById(serverRequest: ServerRequest): Mono<ServerResponse> = ServerResponse
-            .ok()
-            .body(blogpostRepository.findById(serverRequest.pathVariable("id")), Blogpost::class.java)
+    fun getById(serverRequest: ServerRequest): Mono<ServerResponse> =
+            blogpostRepository.findById(serverRequest.pathVariable("id"))
+                    .flatMap { ServerResponse.ok().body(Mono.just(it), Blogpost::class.java) }
 
     fun save(serverRequest: ServerRequest): Mono<ServerResponse> {
-        return blogpostRepository.saveAll(serverRequest.bodyToMono(Blogpost::class.java))
-                // take the first one (first and only saved one)
-                .next()
-                .flatMap { blogpost ->
-                    ServerResponse
-                            .created(createLocationURI(blogpost))
-                            .build()
-                }
+        return serverRequest.bodyToMono(Blogpost::class.java)
+                .flatMap { blogpostRepository.save(it) }
+                .flatMap { blogpost -> ServerResponse.created(createLocationUrl(blogpost)).build() }
     }
 
-    private fun createLocationURI(blogpost: Blogpost) = URI.create("/posts/${blogpost.id}")
+    private fun createLocationUrl(blogpost: Blogpost) = URI.create("/posts/${blogpost.id}")
 }
