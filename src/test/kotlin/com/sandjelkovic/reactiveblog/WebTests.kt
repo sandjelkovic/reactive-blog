@@ -37,7 +37,7 @@ class WebTests {
 
     @Test
     fun getAll() {
-        val blogsBefore = blogpostRepository.findAll().collectList().block()
+        val blogsBefore = blogpostRepository.findAll().collectList().block()!!
 
         webClient.get().uri("/posts")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -68,7 +68,7 @@ class WebTests {
 
     @Test
     fun getById() {
-        val blogsBefore = blogpostRepository.findAll().collectList().block()
+        val blogsBefore = blogpostRepository.findAll().collectList().block()!!
         val existingBlog = blogsBefore[RandomUtils.nextInt(0, blogsBefore.size)]
 
         val responseBody = webClient.get().uri("/posts/${existingBlog.id}")
